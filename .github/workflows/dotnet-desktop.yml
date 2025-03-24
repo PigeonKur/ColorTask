@@ -1,4 +1,4 @@
-name: .NET Desktop Build and Test
+name: .NET Build and Test
 
 on:
   push:
@@ -11,19 +11,26 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: Restore dependencies
-      run: dotnet restore ColorSolution.sln
+      - name: Restore dependencies
+        run: dotnet restore ColorSolution.sln
 
-    - name: Build solution
-      run: dotnet build ColorSolution.sln --no-restore --configuration Release
+      - name: Build solution
+        run: dotnet build ColorSolution.sln --no-restore --configuration Release
 
-    - name: Run tests
-      run: dotnet test ColorSolution.sln --no-build --configuration Release --verbosity normal
+      - name: Run Tests
+        run: dotnet test ColorSolution.sln --no-build --configuration Release --logger trx
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: '**/TestResults/*.trx'
