@@ -1,4 +1,4 @@
-name: .NET Build and Test
+name: .NET Desktop Build and Test
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Setup .NET
@@ -20,10 +20,10 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ColorSolution.sln
 
     - name: Build solution
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build ColorSolution.sln --no-restore --configuration Release
 
     - name: Run tests
-      run: dotnet test --no-build --configuration Release --verbosity normal
+      run: dotnet test ColorSolution.sln --no-build --configuration Release --verbosity normal
